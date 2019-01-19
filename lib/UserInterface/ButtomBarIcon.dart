@@ -36,7 +36,7 @@ class ButtomBarIcon extends StatelessWidget {
         color: Colors.white,
         boxShadow:[
           new BoxShadow(
-            color: const Color(0X11000000),
+            color: Colors.black26,
             blurRadius: 10.0
           )
         ]
