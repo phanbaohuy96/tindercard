@@ -53,45 +53,48 @@ class _MainHomePageState extends State<MainHomePage> {
     return new BottomAppBar(
       color: Colors.transparent,
       elevation: 0.0,
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          new ButtomBarIcon.small(
-            icon: Icons.refresh,
-            iconColor: Colors.orange,
-            onPressed: (){
-              // TODO:
-            },
-          ),
-          new ButtomBarIcon.large(
-            icon: Icons.clear,
-            iconColor: Colors.black,
-            onPressed: (){
-              // TODO:
-            },
-          ),
-          new ButtomBarIcon.small(
-            icon: Icons.star,
-            iconColor: Colors.blue,
-            onPressed: (){
-              // TODO:
-            },
-          ),
-          new ButtomBarIcon.large(
-            icon: Icons.favorite,
-            iconColor: Colors.pinkAccent,
-            onPressed: (){
-              // TODO:
-            },
-          ),
-          new ButtomBarIcon.small(
-            icon: Icons.lock,
-            iconColor: Colors.orange,
-            onPressed: (){
-              // TODO:
-            },
-          )
-        ],
+      child: Container(
+        padding: new EdgeInsets.only(bottom: 10.0),
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,        
+          children: <Widget>[
+            new ButtomBarIcon.small(
+              icon: Icons.refresh,
+              iconColor: Colors.orange,
+              onPressed: (){
+                // TODO:
+              },
+            ),
+            new ButtomBarIcon.large(
+              icon: Icons.clear,
+              iconColor: Colors.black,
+              onPressed: (){
+                // TODO:
+              },
+            ),
+            new ButtomBarIcon.small(
+              icon: Icons.star,
+              iconColor: Colors.blue,
+              onPressed: (){
+                // TODO:
+              },
+            ),
+            new ButtomBarIcon.large(
+              icon: Icons.favorite,
+              iconColor: Colors.pinkAccent,
+              onPressed: (){
+                // TODO:
+              },
+            ),
+            new ButtomBarIcon.small(
+              icon: Icons.lock,
+              iconColor: Colors.orange,
+              onPressed: (){
+                // TODO:
+              },
+            )
+          ],
+        ),
       )
     );
   }
