@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'UserInterface/Card.dart';
+import 'UserInterface/ButtomBarIcon.dart';
 
 void main() => runApp(new MaterialApp( 
   title: 'Flutter Tinder',
@@ -54,7 +56,7 @@ class _MainHomePageState extends State<MainHomePage> {
       color: Colors.transparent,
       elevation: 0.0,
       child: Container(
-        padding: new EdgeInsets.only(bottom: 10.0),
+        padding: new EdgeInsets.only(bottom: 10.0, top: 10.0),
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,        
           children: <Widget>[
@@ -99,72 +101,22 @@ class _MainHomePageState extends State<MainHomePage> {
     );
   }
 
-  Widget _buildCardStack(){
-    return new Center(
-
-    );
+  Widget _buildCardStack(BuildContext context){
+    print("huy.phanbao :: " + MediaQuery.of(context).size.width.toString());
+    return new Center(child: new TinderCard(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      imgURL: 'data/images/2.JPG',)
+      );
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: _buildAppBar(),
-      body: _buildCardStack(),
+      body: _buildCardStack(context),
       bottomNavigationBar: _buildBottomBar(),
     );
   }
 }   
 
-class ButtomBarIcon extends StatelessWidget {
-
-  final IconData icon;
-  final Color iconColor;
-  final double size;
-  final VoidCallback onPressed;
-
-  ButtomBarIcon.large({
-    this.icon,
-    this.iconColor,
-    this.onPressed
-  }) : size = 60.0;
-
-  ButtomBarIcon.small({
-    this.icon,
-    this.iconColor,
-    this.onPressed
-  }) : size = 50.0;
-
-  ButtomBarIcon({
-    this.icon,
-    this.iconColor,
-    this.onPressed,
-    this.size
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: new BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white,
-        boxShadow:[
-          new BoxShadow(
-            color: const Color(0X11000000),
-            blurRadius: 10.0
-          )
-        ]
-      ),
-      child: new RawMaterialButton(
-        shape: new CircleBorder(),
-        elevation: 0.0,
-        child: new Icon(
-          icon,
-          color: iconColor,
-        ),
-        onPressed: onPressed,
-      ),
-    );
-  }
-}
