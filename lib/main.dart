@@ -21,6 +21,7 @@ class _MainHomePageState extends State<MainHomePage> {
 
   Widget _buildAppBar(){
     return new AppBar(
+      centerTitle: true,
       backgroundColor: Colors.transparent,
       elevation: 0.0,
       leading: new IconButton(
@@ -33,9 +34,15 @@ class _MainHomePageState extends State<MainHomePage> {
           // TODO:
         },
       ),
-      title: new FlutterLogo(
-        size: 30.0,
-        colors: Colors.blue,
+      title: new IconButton(
+        icon: new FlutterLogo(
+          size: 30.0,
+          colors: Colors.blue,
+        ),
+        alignment: Alignment.center,
+        onPressed: () =>{
+          // TODO:
+        },
       ),
       actions: <Widget>[
         new IconButton(
@@ -119,4 +126,3 @@ class _MainHomePageState extends State<MainHomePage> {
     );
   }
 }   
-
