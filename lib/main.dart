@@ -109,11 +109,10 @@ class _MainHomePageState extends State<MainHomePage> {
   }
 
   Widget _buildCardStack(BuildContext context){
-    print("huy.phanbao :: " + MediaQuery.of(context).size.width.toString());
-    return new Center(child: new TinderCard(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      imgURL: 'data/images/2.JPG',)
+    return new Container(
+      padding: new EdgeInsets.only(top: 7.0, left: 3.0, right: 3.0, bottom: 7.0),
+      color: Colors.grey[200],
+      child: new TinderCard(mContext: context,)
       );
   }
 
