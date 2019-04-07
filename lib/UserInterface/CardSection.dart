@@ -74,19 +74,9 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
                 });
               },
               onPanEnd: (_) {
-                if(frontCardAlign.x >= 70.0 || frontCardAlign.x <= -70.0 )
-                {           
-                  _controller.stop();
-                  _controller.value = 0.0;
-                  _controller.forward();   
-                }
-                else{
-                  //rollback front card align when touch move not enought
-                  setState(() {
-                    frontCardAlign = defaultFrontCardAlign;
-                    frontCardRot = 0.0; 
-                  });
-                }
+                _controller.stop();
+                _controller.value = 0.0;
+                _controller.forward();  
               },
             ),
           )
@@ -95,10 +85,15 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
     );
   }
 
+  Animation<Alignment> cardAnimationPanEnd()
+  {
+    return (frontCardAlign.x >= 80.0 || frontCardAlign.x <= -80.0 ) ? CardsAnimation.frontCardDisappearAlignmentAnim(_controller, frontCardAlign) : CardsAnimation.frontCardRollBackAlignmentAnim(_controller, frontCardAlign);
+  }
+
   frontCard()
   {
     return new Align(
-      alignment: _controller.status == AnimationStatus.forward ? frontCardDisappearAlignmentAnim(_controller, frontCardAlign).value : frontCardAlign,      
+      alignment: _controller.status == AnimationStatus.forward ? cardAnimationPanEnd().value : frontCardAlign,      
       child: new Transform.rotate(
         angle: (pi / 180.0) * frontCardRot,
         child: new SizedBox.fromSize(
@@ -118,9 +113,25 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
         child: cards[1],
       ),
     );
+  } 
+
+  void changeCardOder() {
+    setState(() {
+      var temp = cards[0];
+      cards[0] = cards[1];
+      cards[1] = temp;
+
+      cards[1] = new ProfileCardItem(cardsCounter + 1);
+      cardsCounter ++;
+
+      frontCardAlign = defaultFrontCardAlign;
+      frontCardRot = 0.0;
+    });
   }
+}
 
-
+class CardsAnimation
+{
   //Release card
   static Animation<Alignment> frontCardDisappearAlignmentAnim(AnimationController parent, Alignment beginAlign)
   {
@@ -139,17 +150,21 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
     );
   }
 
-  void changeCardOder() {
-    setState(() {
-      var temp = cards[0];
-      cards[0] = cards[1];
-      cards[1] = temp;
-
-      cards[1] = new ProfileCardItem(cardsCounter + 1);
-      cardsCounter ++;
-
-      frontCardAlign = defaultFrontCardAlign;
-      frontCardRot = 0.0;
-    });
+  //RollbackCard
+  static Animation<Alignment> frontCardRollBackAlignmentAnim(AnimationController parent, Alignment beginAlign)
+  {
+    print("frontCardDisappearAlignmentAnim");
+    return new AlignmentTween
+    (
+      begin: beginAlign,
+      end: new Alignment(0.0, 0.0) // Has swiped to the left or right?
+    ).animate
+    (
+      new CurvedAnimation
+      (
+        parent: parent,
+        curve: new Interval(0.0, 0.5, curve: Curves.easeIn)
+      )
+    );
   }
 }
