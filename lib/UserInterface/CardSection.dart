@@ -29,6 +29,8 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
   Alignment frontCardAlign;
   double frontCardRot = 0.0;
 
+  bool isRollBack = false;
+
   @override
   void initState() {
     
@@ -74,6 +76,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
                 });
               },
               onPanEnd: (_) {
+                isRollBack = !(frontCardAlign.x >= 80.0 || frontCardAlign.x <= -80.0);
                 _controller.stop();
                 _controller.value = 0.0;
                 _controller.forward();  
@@ -85,17 +88,17 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
     );
   }
 
-  Animation<Alignment> cardAnimationPanEnd()
+  Animation<Alignment> cardAlignAnimationPanEnd()
   {
-    return (frontCardAlign.x >= 80.0 || frontCardAlign.x <= -80.0 ) ? CardsAnimation.frontCardDisappearAlignmentAnim(_controller, frontCardAlign) : CardsAnimation.frontCardRollBackAlignmentAnim(_controller, frontCardAlign);
+    return !isRollBack ? CardsAnimation.frontCardDisappearAlignmentAnim(_controller, frontCardAlign) : CardsAnimation.frontCardRollBackAlignmentAnim(_controller, frontCardAlign);
   }
 
   frontCard()
   {
     return new Align(
-      alignment: _controller.status == AnimationStatus.forward ? cardAnimationPanEnd().value : frontCardAlign,      
+      alignment: _controller.status == AnimationStatus.forward ? cardAlignAnimationPanEnd().value : frontCardAlign,      
       child: new Transform.rotate(
-        angle: (pi / 180.0) * frontCardRot,
+        angle: (pi / 180.0) * (_controller.status == AnimationStatus.forward && isRollBack ? CardsAnimation.frontCardRollBackRotAnim(_controller, frontCardRot).value : frontCardRot),
         child: new SizedBox.fromSize(
           size: frontCardSize,
           child: cards[0],
@@ -117,13 +120,16 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
   void changeCardOder() {
     setState(() {
-      var temp = cards[0];
-      cards[0] = cards[1];
-      cards[1] = temp;
+      if(!isRollBack)
+      {
+        var temp = cards[0];
+        cards[0] = cards[1];
+        cards[1] = temp;
 
-      cards[1] = new ProfileCardItem(cardsCounter + 1);
-      cardsCounter ++;
-
+        cards[1] = new ProfileCardItem(cardsCounter + 1);
+        cardsCounter ++;
+      }
+      
       frontCardAlign = defaultFrontCardAlign;
       frontCardRot = 0.0;
     });
@@ -150,7 +156,7 @@ class CardsAnimation
     );
   }
 
-  //RollbackCard
+  //Rollback alignment Card
   static Animation<Alignment> frontCardRollBackAlignmentAnim(AnimationController parent, Alignment beginAlign)
   {
     print("frontCardDisappearAlignmentAnim");
@@ -167,4 +173,23 @@ class CardsAnimation
       )
     );
   }
+
+  //Rollback rotation Card
+  static Animation<double> frontCardRollBackRotAnim(AnimationController parent, double beginRot)
+  {
+    print("frontCardDisappearAlignmentAnim");
+    return new Tween<double>
+    (
+      begin: beginRot,
+      end: 0 // Has swiped to the left or right?
+    ).animate
+    (
+      new CurvedAnimation
+      (
+        parent: parent,
+        curve: new Interval(0.0, 0.5, curve: Curves.easeIn)
+      )
+    );
+  }
+
 }
