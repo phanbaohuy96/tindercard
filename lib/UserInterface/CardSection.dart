@@ -40,7 +40,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
     frontCardAlign = new Alignment(0.0, 0.0);
 
-    _controller = new AnimationController(duration: new Duration(microseconds: 5000), vsync: this);
+    _controller = new AnimationController(duration: new Duration(milliseconds: 700), vsync: this);
     _controller.addListener(() => setState( () {} ));
     _controller.addStatusListener((AnimationStatus status)
     {
@@ -128,7 +128,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
     return new AlignmentTween
     (
       begin: beginAlign,
-      end: new Alignment(beginAlign.x / 10.0 > 0 ? beginAlign.x / 10.0 + 30.0 : beginAlign.x / 10.0 - 30.0, 0.0) // Has swiped to the left or right?
+      end: new Alignment(beginAlign.x > 0 ? beginAlign.x + 60.0 : beginAlign.x - 60.0, 0.0) // Has swiped to the left or right?
     ).animate
     (
       new CurvedAnimation
