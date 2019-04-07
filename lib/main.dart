@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'UserInterface/Card.dart';
 import 'UserInterface/ButtomBarIcon.dart';
+import 'Control/data.dart';
+import 'UserInterface/CardSection.dart';
 
 void main() => runApp(new MaterialApp( 
   title: 'Flutter Tinder',
@@ -20,9 +22,9 @@ class MainHomePage extends StatefulWidget {
 class _MainHomePageState extends State<MainHomePage> {
 
   Widget _buildAppBar(){
-    return new AppBar(
+    return new AppBar(      
       centerTitle: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       elevation: 0.0,
       leading: new IconButton(
         icon: new Icon(
@@ -63,6 +65,7 @@ class _MainHomePageState extends State<MainHomePage> {
       color: Colors.transparent,
       elevation: 0.0,
       child: Container(
+        color: Colors.white,
         padding: new EdgeInsets.only(bottom: 10.0, top: 10.0),
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,        
@@ -72,6 +75,7 @@ class _MainHomePageState extends State<MainHomePage> {
               iconColor: Colors.orange,
               onPressed: (){
                 // TODO:
+                tinderCard.refreshStageImgData();
               },
             ),
             new ButtomBarIcon.large(
@@ -108,11 +112,14 @@ class _MainHomePageState extends State<MainHomePage> {
     );
   }
 
+  TinderCard tinderCard; 
+
   Widget _buildCardStack(BuildContext context){
+    tinderCard = new TinderCard(mContext: context);
     return new Container(
       padding: new EdgeInsets.only(top: 7.0, left: 3.0, right: 3.0, bottom: 7.0),
       color: Colors.grey[200],
-      child: new TinderCard(mContext: context,)
+      child: tinderCard
       );
   }
 
@@ -120,7 +127,8 @@ class _MainHomePageState extends State<MainHomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: _buildAppBar(),
-      body: _buildCardStack(context),
+      body:
+          new CardSection(context),
       bottomNavigationBar: _buildBottomBar(),
     );
   }
