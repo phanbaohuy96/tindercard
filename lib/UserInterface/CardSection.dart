@@ -11,8 +11,7 @@ class CardSection extends StatefulWidget {
   
   CardSection (BuildContext context)
   {
-    frontCardSize = new Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.7);
-
+    frontCardSize = new Size(MediaQuery.of(context).size.width * 0.99, MediaQuery.of(context).size.height * 0.75);
   }
 
   @override  
@@ -41,7 +40,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
     frontCardAlign = new Alignment(0.0, 0.0);
 
-    _controller = new AnimationController(duration: new Duration(microseconds: 500), vsync: this);
+    _controller = new AnimationController(duration: new Duration(microseconds: 5000), vsync: this);
     _controller.addListener(() => setState( () {} ));
     _controller.addStatusListener((AnimationStatus status)
     {
@@ -67,15 +66,19 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
                   frontCardAlign = new Alignment
                   (
-                    frontCardAlign.x + 20 * details.delta.dx / MediaQuery.of(context).size.width,
+                    frontCardAlign.x + 200 * details.delta.dx / MediaQuery.of(context).size.width,
                     frontCardAlign.y + 40 * details.delta.dy / MediaQuery.of(context).size.height
                   );
 
+                  frontCardRot = frontCardAlign.x / 10;
                 });
               },
               onPanEnd: (_) {
-                if(frontCardAlign.x >= 3.0 || frontCardAlign.x <= -3.0 )
-                {              
+                if(frontCardAlign.x >= 70.0 || frontCardAlign.x <= -70.0 )
+                {           
+                  _controller.stop();
+                  _controller.value = 0.0;
+                  _controller.forward();   
                 }
                 else{
                   //rollback front card align when touch move not enought
@@ -95,8 +98,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
   frontCard()
   {
     return new Align(
-      alignment: _controller.status == AnimationStatus.forward ? frontCardDisappearAlignmentAnim(_controller, frontCardAlign) : frontCardAlign,
-      
+      alignment: _controller.status == AnimationStatus.forward ? frontCardDisappearAlignmentAnim(_controller, frontCardAlign).value : frontCardAlign,      
       child: new Transform.rotate(
         angle: (pi / 180.0) * frontCardRot,
         child: new SizedBox.fromSize(
@@ -110,8 +112,11 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
   backCard()
   {
     return new Align(
-      child: cards[1],
-      alignment: defaultFrontCardAlign
+      alignment: defaultFrontCardAlign,
+      child: new SizedBox.fromSize(
+        size: frontCardSize,
+        child: cards[1],
+      ),
     );
   }
 
@@ -123,7 +128,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
     return new AlignmentTween
     (
       begin: beginAlign,
-      end: new Alignment(beginAlign.x > 0 ? beginAlign.x + 30.0 : beginAlign.x - 30.0, 0.0) // Has swiped to the left or right?
+      end: new Alignment(beginAlign.x / 10.0 > 0 ? beginAlign.x / 10.0 + 30.0 : beginAlign.x / 10.0 - 30.0, 0.0) // Has swiped to the left or right?
     ).animate
     (
       new CurvedAnimation
