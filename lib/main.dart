@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'UserInterface/Card.dart';
 import 'UserInterface/ButtomBarIcon.dart';
-import 'Control/data.dart';
 import 'UserInterface/CardSection.dart';
 
 void main() => runApp(new MaterialApp( 
@@ -74,8 +72,7 @@ class _MainHomePageState extends State<MainHomePage> {
               icon: Icons.refresh,
               iconColor: Colors.orange,
               onPressed: (){
-                // TODO:
-                tinderCard.refreshStageImgData();
+                //TODO:
               },
             ),
             new ButtomBarIcon.large(
@@ -110,17 +107,6 @@ class _MainHomePageState extends State<MainHomePage> {
         ),
       )
     );
-  }
-
-  TinderCard tinderCard; 
-
-  Widget _buildCardStack(BuildContext context){
-    tinderCard = new TinderCard(mContext: context);
-    return new Container(
-      padding: new EdgeInsets.only(top: 7.0, left: 3.0, right: 3.0, bottom: 7.0),
-      color: Colors.grey[200],
-      child: tinderCard
-      );
   }
 
   @override
