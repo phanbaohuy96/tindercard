@@ -42,7 +42,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
     frontCardAlign = new Alignment(0.0, 0.0);
 
-    _controller = new AnimationController(duration: new Duration(milliseconds: 700), vsync: this);
+    _controller = new AnimationController(duration: new Duration(milliseconds: 500), vsync: this);
     _controller.addListener(() => setState( () {} ));
     _controller.addStatusListener((AnimationStatus status)
     {
@@ -145,7 +145,7 @@ class CardsAnimation
     return new AlignmentTween
     (
       begin: beginAlign,
-      end: new Alignment(beginAlign.x > 0 ? beginAlign.x + 60.0 : beginAlign.x - 60.0, 0.0) // Has swiped to the left or right?
+      end: new Alignment(beginAlign.x > 0 ? beginAlign.x + 150.0 : beginAlign.x - 150.0, 0.0) // Has swiped to the left or right?
     ).animate
     (
       new CurvedAnimation
@@ -159,7 +159,6 @@ class CardsAnimation
   //Rollback alignment Card
   static Animation<Alignment> frontCardRollBackAlignmentAnim(AnimationController parent, Alignment beginAlign)
   {
-    print("frontCardDisappearAlignmentAnim");
     return new AlignmentTween
     (
       begin: beginAlign,
@@ -177,7 +176,6 @@ class CardsAnimation
   //Rollback rotation Card
   static Animation<double> frontCardRollBackRotAnim(AnimationController parent, double beginRot)
   {
-    print("frontCardDisappearAlignmentAnim");
     return new Tween<double>
     (
       begin: beginRot,
