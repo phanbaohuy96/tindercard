@@ -2,12 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'ProfileCardItem.dart';
+import 'package:tinder_card/Controller/AnimationUtils/CardsAnimation.dart';
 
 List<Size> cardsSize = new List(2);
 Size frontCardSize, contextSize;
 double maxPerWidth = 0.99, maxPerHeight = 0.75;
 double maxPerWidthBack = 0.9, maxPerHeightBack = 0.7;
-
 
 class CardSection extends StatefulWidget {
 
@@ -35,7 +35,6 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
   double frontCardRot = 0.0;
 
   bool isRollBack = false;
-  bool isTapDown =false;
 
   @override
   void initState() {
@@ -43,7 +42,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
     //create card
     for (cardsCounter = 0; cardsCounter < 2; cardsCounter++)
     {
-      cards.add(new ProfileCardItem(cardsCounter + 1));
+      cards.add(new ProfileCardItem(cardsCounter + 1, 9, 0, _onCardPanUpdate, _onCardPanEnd));
     }
 
     frontCardAlign = new Alignment(0.0, 0.0);
@@ -63,13 +62,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
       child: new Stack(
         children: <Widget>[ 
           backCard(),
-          frontCard(),
-          new SizedBox.expand(
-            child: new GestureDetector(
-              onPanUpdate: (details) => _onCardPanUpdate(details, context),
-              onPanEnd: (_) => _onCardPanEnd(),
-            ),
-          )
+          frontCard()
         ],
       ),
     );
@@ -77,12 +70,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
   _onCardPanUpdate(DragUpdateDetails details, BuildContext context)
   {
-    setState(() {                  
-      if(!isTapDown)
-      {
-        isTapDown = !isTapDown;
-      }
-
+    setState(() {   
       frontCardAlign = new Alignment
       (
         frontCardAlign.x + 200 * details.delta.dx / MediaQuery.of(context).size.width,
@@ -101,9 +89,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
   _onCardPanEnd()
   {
-    if(isTapDown)
-      isTapDown = !isTapDown;
-
+    print("_onCardPanEnd");
     isRollBack = !(frontCardAlign.x >= 80.0 || frontCardAlign.x <= -80.0);
     _controller.stop();
     _controller.value = 0.0;
@@ -117,6 +103,8 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
   frontCard()
   {
+    print("frontCard");
+
     return new Align(
       alignment: _controller.status == AnimationStatus.forward ? cardAlignAnimationPanEnd().value : frontCardAlign,      
       child: new Transform.rotate(
@@ -126,7 +114,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
           child: cards[0],
         ),
       )
-    );  
+    );
   }
 
   backCard()
@@ -148,7 +136,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
         cards[0] = cards[1];
         cards[1] = temp;
 
-        cards[1] = new ProfileCardItem(cardsCounter + 1);
+        cards[1] = new ProfileCardItem(cardsCounter + 1, 3, 0, _onCardPanUpdate, _onCardPanEnd);
         cardsCounter ++;
       }
       
@@ -157,59 +145,4 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
       frontCardRot = 0.0;
     });
   }
-}
-
-class CardsAnimation
-{
-  //Release card
-  static Animation<Alignment> frontCardDisappearAlignmentAnim(AnimationController parent, Alignment beginAlign)
-  {
-    return new AlignmentTween
-    (
-      begin: beginAlign,
-      end: new Alignment(beginAlign.x > 0 ? beginAlign.x + 150.0 : beginAlign.x - 150.0, 0.0) // Has swiped to the left or right?
-    ).animate
-    (
-      new CurvedAnimation
-      (
-        parent: parent,
-        curve: new Interval(0.0, 0.5, curve: Curves.easeIn)
-      )
-    );
-  }
-
-  //Rollback alignment Card
-  static Animation<Alignment> frontCardRollBackAlignmentAnim(AnimationController parent, Alignment beginAlign)
-  {
-    return new AlignmentTween
-    (
-      begin: beginAlign,
-      end: new Alignment(0.0, 0.0) // Has swiped to the left or right?
-    ).animate
-    (
-      new CurvedAnimation
-      (
-        parent: parent,
-        curve: new Interval(0.0, 0.5, curve: Curves.easeIn)
-      )
-    );
-  }
-
-  //Rollback rotation Card
-  static Animation<double> frontCardRollBackRotAnim(AnimationController parent, double beginRot)
-  {
-    return new Tween<double>
-    (
-      begin: beginRot,
-      end: 0 // Has swiped to the left or right?
-    ).animate
-    (
-      new CurvedAnimation
-      (
-        parent: parent,
-        curve: new Interval(0.0, 0.5, curve: Curves.easeIn)
-      )
-    );
-  }
-
 }

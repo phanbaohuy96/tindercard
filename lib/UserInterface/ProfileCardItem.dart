@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-
+import 'SliderStack.dart';
 
 class ProfileCardItem extends StatelessWidget {
 
   final int cardNum;
-  ProfileCardItem(this.cardNum);
+  List<String> imageList = new List();
+  int selectedIdx, numImages;
+  final Function onCardPanUpdate, onCardPanEnd;
+  ProfileCardItem(this.cardNum, this.numImages, this.selectedIdx, this.onCardPanUpdate, this.onCardPanEnd);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: new Stack(
         children: <Widget>[
-
           //Create a picture
           new SizedBox.expand(
             child: new Material(              
@@ -47,6 +49,15 @@ class ProfileCardItem extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+          new SliderStack(
+            new Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.015), 
+            numImages, 
+            selectedIdx
+          ),
+          new GestureDetector(
+            onPanUpdate: (details) => onCardPanUpdate(details, context),
+            onPanEnd: (_) => onCardPanEnd(),
           )
         ],
       ),
