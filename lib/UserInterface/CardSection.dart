@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'ProfileCardItem.dart';
 import 'package:tinder_card/Controller/AnimationUtils/CardsAnimation.dart';
 
-List<Size> cardsSize = new List(2);
-Size frontCardSize, contextSize;
-double maxPerWidth = 0.99, maxPerHeight = 0.75;
+Size backCardSize, contextSize;
 double maxPerWidthBack = 0.9, maxPerHeightBack = 0.7;
 
 class CardSection extends StatefulWidget {
@@ -15,8 +13,7 @@ class CardSection extends StatefulWidget {
   CardSection (BuildContext context)
   {
     contextSize = new Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
-    cardsSize[0] = new Size(contextSize.width * maxPerWidth, contextSize.height * maxPerHeight);
-    cardsSize[1] = new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack);
+    backCardSize = new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack);
   }
 
   @override  
@@ -30,8 +27,8 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
   List<ProfileCardItem> cards = new List();
   AnimationController _controller;
 
-  final Alignment defaultFrontCardAlign = new Alignment(0.0, 0.0);
-  Alignment frontCardAlign;
+  final Offset defaultFrontCardOffset = new Offset(0.0, 0.0);
+  Offset frontCardOffset;
   double frontCardRot = 0.0;
 
   bool isRollBack = false;
@@ -45,7 +42,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
       cards.add(new ProfileCardItem(cardsCounter + 1, 9, 0, _onCardPanUpdate, _onCardPanEnd));
     }
 
-    frontCardAlign = new Alignment(0.0, 0.0);
+    frontCardOffset = new Offset(0.0, 0.0);
 
     _controller = new AnimationController(duration: new Duration(milliseconds: 500), vsync: this);
     _controller.addListener(() => setState( () {} ));
@@ -71,47 +68,53 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
   _onCardPanUpdate(DragUpdateDetails details, BuildContext context)
   {
     setState(() {   
-      frontCardAlign = new Alignment
+      if(_controller.status == AnimationStatus.forward)
+        _controller.stop();
+      frontCardOffset = new Offset
       (
-        frontCardAlign.x + 200 * details.delta.dx / MediaQuery.of(context).size.width,
-        frontCardAlign.y + 60 * details.delta.dy / MediaQuery.of(context).size.height
+        frontCardOffset.dx + 300 * details.delta.dx / MediaQuery.of(context).size.width,
+        frontCardOffset.dy + 400 * details.delta.dy / MediaQuery.of(context).size.height
       );
 
       //Animation resize backcard
-      double newPerX = min(max(frontCardAlign.x, -frontCardAlign.x) * 0.01, 1);
-      double newPerY = min(max(frontCardAlign.y * 4, -frontCardAlign.y * 4) * 0.01, 1);
+      double newPerX = min(max(frontCardOffset.dx, -frontCardOffset.dx) * 0.01, 1);
+      double newPerY = min(max(frontCardOffset.dy , -frontCardOffset.dy) * 0.01, 1);
       double newPer = max(newPerX, newPerY);      
-      cardsSize[1] = new Size(contextSize.width * (maxPerWidthBack + (maxPerWidth - maxPerWidthBack) * newPer), contextSize.height * (maxPerHeightBack + (maxPerHeight - maxPerHeightBack) * newPer));
+      backCardSize = new Size(
+        contextSize.width * (maxPerWidthBack + (1 - maxPerWidthBack) * newPer * 2), 
+        contextSize.height * (maxPerHeightBack + (1 - maxPerHeightBack) * newPer / 2)
+      );
 
-      frontCardRot = frontCardAlign.x / 10;
+      frontCardRot = frontCardOffset.dx / 10;
     });
   }
 
   _onCardPanEnd()
   {
     print("_onCardPanEnd");
-    isRollBack = !(frontCardAlign.x >= 80.0 || frontCardAlign.x <= -80.0);
+    isRollBack = !(frontCardOffset.dx >= 80.0 || frontCardOffset.dx <= -80.0);
     _controller.stop();
     _controller.value = 0.0;
     _controller.forward();  
   }
 
-  Animation<Alignment> cardAlignAnimationPanEnd()
+  Animation<Offset> cardAlignAnimationPanEnd()
   {
-    return !isRollBack ? CardsAnimation.frontCardDisappearAlignmentAnim(_controller, frontCardAlign) : CardsAnimation.frontCardRollBackAlignmentAnim(_controller, frontCardAlign);
+    return !isRollBack ? CardsAnimation.frontCardDisappearOffsetAnim(_controller, frontCardOffset) : CardsAnimation.frontCardRollBackOffsetAnim(_controller, frontCardOffset);
   }
 
   frontCard()
   {
     print("frontCard");
 
-    return new Align(
-      alignment: _controller.status == AnimationStatus.forward ? cardAlignAnimationPanEnd().value : frontCardAlign,      
-      child: new Transform.rotate(
-        angle: (pi / 180.0) * (_controller.status == AnimationStatus.forward && isRollBack ? CardsAnimation.frontCardRollBackRotAnim(_controller, frontCardRot).value : frontCardRot),
-        child: new SizedBox.fromSize(
-          size: cardsSize[0],
-          child: cards[0],
+    return new Container(
+      child: new Transform.translate(
+        offset: _controller.status == AnimationStatus.forward ? cardAlignAnimationPanEnd().value : frontCardOffset,
+        child:  new Transform.rotate(
+          angle: (pi / 180.0) * (_controller.status == AnimationStatus.forward && isRollBack ? CardsAnimation.frontCardRollBackRotAnim(_controller, frontCardRot).value : frontCardRot),
+          child: new SizedBox.fromSize(
+            child: cards[0],
+          ),
         ),
       )
     );
@@ -119,11 +122,13 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
   backCard()
   {
-    return new Align(
-      alignment: defaultFrontCardAlign,
-      child: new SizedBox.fromSize(
-        size: cardsSize[1],
-        child: cards[1],
+    return new Align(      
+      child: new Transform.translate(
+        offset: defaultFrontCardOffset,
+        child: new SizedBox.fromSize(
+          size: (_controller.status == AnimationStatus.forward && isRollBack) ? CardsAnimation.backCardRollBackResizeAnim(_controller, backCardSize, new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack)).value : backCardSize,
+          child: cards[1],
+        )
       ),
     );
   } 
@@ -140,8 +145,8 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
         cardsCounter ++;
       }
       
-      cardsSize[1] = new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack);
-      frontCardAlign = defaultFrontCardAlign;
+      backCardSize = new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack);
+      frontCardOffset = defaultFrontCardOffset;
       frontCardRot = 0.0;
     });
   }
