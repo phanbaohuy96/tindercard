@@ -39,7 +39,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
     //create card
     for (cardsCounter = 0; cardsCounter < 2; cardsCounter++)
     {
-      cards.add(new ProfileCardItem(cardsCounter + 1, 9, 0, _onCardPanUpdate, _onCardPanEnd));
+      cards.add(new ProfileCardItem(cardsCounter + 1, 9, _onCardPanUpdate, _onCardPanEnd));
     }
 
     frontCardOffset = new Offset(0.0, 0.0);
@@ -105,8 +105,6 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
   frontCard()
   {
-    print("frontCard");
-
     return new Container(
       child: new Transform.translate(
         offset: _controller.status == AnimationStatus.forward ? cardAlignAnimationPanEnd().value : frontCardOffset,
@@ -141,7 +139,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
         cards[0] = cards[1];
         cards[1] = temp;
 
-        cards[1] = new ProfileCardItem(cardsCounter + 1, 3, 0, _onCardPanUpdate, _onCardPanEnd);
+        cards[1] = new ProfileCardItem(cardsCounter + 1, 3, _onCardPanUpdate, _onCardPanEnd);
         cardsCounter ++;
       }
       
