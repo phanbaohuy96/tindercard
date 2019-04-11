@@ -27,29 +27,17 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
   List<ProfileCardItem> cards = new List();
   AnimationController _controller;
 
-  final Offset defaultFrontCardOffset = new Offset(0.0, 0.0);
-  Offset frontCardOffset;
-  double frontCardRot = 0.0;
-
-  bool isRollBack = false;
-
   @override
   void initState() {
     
     //create card
-    for (cardsCounter = 0; cardsCounter < 2; cardsCounter++)
+    for (cardsCounter = 0; cardsCounter < 3; cardsCounter++)
     {
-      cards.add(new ProfileCardItem(cardsCounter + 1, 9, _onCardPanUpdate, _onCardPanEnd));
+      cards.add(new ProfileCardItem(cardsCounter + 1, 9, _onFontCardPanUpdate, changeCardOder, _onCardRollBack));
     }
-
-    frontCardOffset = new Offset(0.0, 0.0);
 
     _controller = new AnimationController(duration: new Duration(milliseconds: 500), vsync: this);
     _controller.addListener(() => setState( () {} ));
-    _controller.addStatusListener((AnimationStatus status)
-    {
-      if(status == AnimationStatus.completed) changeCardOder();
-    });
     super.initState();
   }
 
@@ -65,55 +53,31 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
     );
   }
 
-  _onCardPanUpdate(DragUpdateDetails details, BuildContext context)
+  _onFontCardPanUpdate(double perbackCard)
   {
-    setState(() {   
-      if(_controller.status == AnimationStatus.forward)
-        _controller.stop();
-      frontCardOffset = new Offset
-      (
-        frontCardOffset.dx + 300 * details.delta.dx / MediaQuery.of(context).size.width,
-        frontCardOffset.dy + 400 * details.delta.dy / MediaQuery.of(context).size.height
-      );
-
-      //Animation resize backcard
-      double newPerX = min(max(frontCardOffset.dx, -frontCardOffset.dx) * 0.01, 1);
-      double newPerY = min(max(frontCardOffset.dy , -frontCardOffset.dy) * 0.01, 1);
-      double newPer = max(newPerX, newPerY);      
+    print("_onFontCardPanUpdate");
+    setState(() {
       backCardSize = new Size(
-        contextSize.width * (maxPerWidthBack + (1 - maxPerWidthBack) * newPer * 2), 
-        contextSize.height * (maxPerHeightBack + (1 - maxPerHeightBack) * newPer / 2)
+        contextSize.width * (maxPerWidthBack + (1 - maxPerWidthBack) * perbackCard * 2), 
+        contextSize.height * (maxPerHeightBack + (1 - maxPerHeightBack) * perbackCard / 2)
       );
-
-      frontCardRot = frontCardOffset.dx / 10;
     });
+    
   }
 
-  _onCardPanEnd()
+  _onCardRollBack()
   {
-    print("_onCardPanEnd");
-    isRollBack = !(frontCardOffset.dx >= 80.0 || frontCardOffset.dx <= -80.0);
+    print("_onCardRollBack");
     _controller.stop();
     _controller.value = 0.0;
-    _controller.forward();  
-  }
-
-  Animation<Offset> cardAlignAnimationPanEnd()
-  {
-    return !isRollBack ? CardsAnimation.frontCardDisappearOffsetAnim(_controller, frontCardOffset) : CardsAnimation.frontCardRollBackOffsetAnim(_controller, frontCardOffset);
+    _controller.forward(); 
   }
 
   frontCard()
   {
-    return new Container(
-      child: new Transform.translate(
-        offset: _controller.status == AnimationStatus.forward ? cardAlignAnimationPanEnd().value : frontCardOffset,
-        child:  new Transform.rotate(
-          angle: (pi / 180.0) * (_controller.status == AnimationStatus.forward && isRollBack ? CardsAnimation.frontCardRollBackRotAnim(_controller, frontCardRot).value : frontCardRot),
-          child: new SizedBox.fromSize(
-            child: cards[0],
-          ),
-        ),
+    return new Align(
+      child: SizedBox.fromSize(
+        child: cards[0],
       )
     );
   }
@@ -121,31 +85,17 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
   backCard()
   {
     return new Align(      
-      child: new Transform.translate(
-        offset: defaultFrontCardOffset,
-        child: new SizedBox.fromSize(
-          size: (_controller.status == AnimationStatus.forward && isRollBack) ? CardsAnimation.backCardRollBackResizeAnim(_controller, backCardSize, new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack)).value : backCardSize,
-          child: cards[1],
-        )
-      ),
+      child: new SizedBox.fromSize(
+        size: _controller.status == AnimationStatus.forward ? CardsAnimation.backCardRollBackResizeAnim(_controller, backCardSize, new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack)).value : backCardSize,
+        child: cards[1],
+      )
     );
   } 
 
   void changeCardOder() {
-    setState(() {
-      if(!isRollBack)
-      {
-        var temp = cards[0];
-        cards[0] = cards[1];
-        cards[1] = temp;
-
-        cards[1] = new ProfileCardItem(cardsCounter + 1, 3, _onCardPanUpdate, _onCardPanEnd);
-        cardsCounter ++;
-      }
-      
-      backCardSize = new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack);
-      frontCardOffset = defaultFrontCardOffset;
-      frontCardRot = 0.0;
-    });
+    cards.removeAt(0);
+    cards.add(new ProfileCardItem(cardsCounter + 1, 3, _onFontCardPanUpdate, changeCardOder, _onCardRollBack));
+    cardsCounter ++;      
+    backCardSize = new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack);
   }
 }
