@@ -6,7 +6,7 @@ import 'dart:math';
 class ProfileCardItem extends StatefulWidget {
 
   final int cardNum, numImages;
-  final List<String> imageList = new List();
+  final List<String> imageList = List();
   final Function onCardPanUpdateCallBack, onReleaseCallback, onCardRollBackCallBack, onComplete;
 
   ProfileCardItem({ 
@@ -39,11 +39,11 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
   @override
   void initState()
   {
-    _offset = new Offset(0.0, 0.0);
+    _offset = Offset(0.0, 0.0);
     _rotation = 0.0;
     _isRollback = true;
 
-    _controller = new AnimationController(duration: new Duration(milliseconds: 500), vsync: this);
+    _controller = AnimationController(duration: Duration(milliseconds: 500), vsync: this);
     _controller.addListener(() => setState(() { }));
     _controller.addStatusListener(_onComplete);
 
@@ -59,7 +59,7 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
     {
       if(_isRollback)
       {
-        _offset = new Offset(0.0, 0.0);
+        _offset = Offset(0.0, 0.0);
         _rotation = 0.0;
       } else {
         widget.onComplete();
@@ -72,7 +72,7 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
   {
     setState(() {
       //translate card
-      _offset = new Offset(
+      _offset = Offset(
         _offset.dx + 400 * details.delta.dx / MediaQuery.of(context).size.width,
         _offset.dy + 600 * details.delta.dy / MediaQuery.of(context).size.height
       );
@@ -122,28 +122,32 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    return new Align(
-      child: new Transform.translate(
+    return Align(
+      child: Transform.translate(
         offset: _controller.status == AnimationStatus.forward ? _cardAnimRollBackOrDisappear() : _offset,
-        child: new Transform.rotate(
+        child: Transform.rotate(
           angle: _controller.status == AnimationStatus.forward && _isRollback ? CardsAnimation.frontCardRollBackRotAnim(_controller, _rotation).value : _rotation,
           child: Container(
             margin: EdgeInsets.all(3),  
-            child: new Stack(
+            child: Stack(
               children: <Widget>[
                 //Create a picture
-                new SizedBox.expand(
-                  child: new Material(              
-                    borderRadius: new BorderRadius.circular(12.0),
-                    child: new Image.asset('data/images/cf1.JPG', fit: BoxFit.cover),
+                SizedBox.expand(
+                  child: Material(              
+                    borderRadius: BorderRadius.circular(12.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.asset('data/images/cf1.JPG', fit: BoxFit.cover)
+                    ),
                   ),
                 ),
 
                 //make effect gradient from center widget to end
-                new SizedBox.expand(
-                  child: new Container(
-                    decoration: new BoxDecoration(
-                      gradient: new LinearGradient(
+                SizedBox.expand(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8.0), bottomRight: Radius.circular(8.0)),
+                      gradient: LinearGradient(
                         colors: [Colors.transparent, Colors.black54],
                         begin: Alignment.center,
                         end: Alignment.bottomCenter
@@ -153,29 +157,32 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
                 ),
 
                 //Create descristion for image
-                new Align(
+                Align(
                   alignment: Alignment.bottomLeft,
-                  child: new Container(
-                    margin: new EdgeInsets.only(left: 6, bottom: 6),
-                    child: new Column(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 6, bottom: 6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8.0), bottomRight: Radius.circular(8.0))
+                    ),
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        new Text('Card number ' + widget.cardNum.toString(), style: new TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w700)),
-                        new Padding(padding: new EdgeInsets.only(bottom: 4.0)),
-                        new Text('A short description.', textAlign: TextAlign.start, style: new TextStyle(color: Colors.white)),
+                        Text('Card number ' + widget.cardNum.toString(), style: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w700)),
+                        Padding(padding: EdgeInsets.only(bottom: 4.0)),
+                        Text('A short description.', textAlign: TextAlign.start, style: TextStyle(color: Colors.white)),
                       ],
                     ),
                   ),
                 ),
 
-                new SliderStack(
-                  new Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.012), 
+                SliderStack(
+                  Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.012), 
                   widget.numImages, 
                   _selectedIdx
                 ),
 
-                new GestureDetector(
+                GestureDetector(
                   onPanUpdate: (details) => _onCardPanUpdate(details, context),
                   onPanEnd: (_) => _onCardPanEnd(),
                   onTapUp: (details) => _onTapUp(details, context),
