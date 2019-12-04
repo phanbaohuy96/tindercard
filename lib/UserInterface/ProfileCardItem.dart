@@ -21,7 +21,6 @@ class ProfileCardItem extends StatefulWidget {
 
   @override
   _ProfileCardItemState createState() {
-    print("createState" );
     return _ProfileCardItemState();
   }
 }
@@ -49,7 +48,6 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
 
     super.initState();    
     _selectedIdx = 0;
-    print("_selectedIdx = $_selectedIdx" );
   }
 
 
@@ -90,7 +88,6 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
 
   _onCardPanEnd()
   {
-    print("_onCardPanEnd");
     _isRollback = !(_offset.dx >= 80.0 || _offset.dx <= -80.0);
     if(_isRollback) widget.onCardRollBackCallBack();
     else widget.onReleaseCallback();
@@ -176,10 +173,16 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
                   ),
                 ),
 
-                SliderStack(
-                  Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.012), 
-                  widget.numImages, 
-                  _selectedIdx
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: SliderStack(
+                      Size(MediaQuery.of(context).size.width - 20, MediaQuery.of(context).size.height * 0.012), 
+                      widget.numImages, 
+                      _selectedIdx
+                    ),
+                  ),
                 ),
 
                 GestureDetector(
