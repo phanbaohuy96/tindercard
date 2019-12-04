@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class SliderStackItem extends StatelessWidget {
+class IndicatorStackItem extends StatelessWidget {
   final bool isSelected;
-  SliderStackItem(this.isSelected);
+  IndicatorStackItem(this.isSelected);
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +23,18 @@ class SliderStackItem extends StatelessWidget {
 }
 
 
-List<SliderStackItem> sliderItems;
+List<IndicatorStackItem> indicatorItems;
 
-class SliderStack extends StatelessWidget {
+class IndicatorStack extends StatelessWidget {
   
 
   final Size size;
   final int numItems;  
   
   final int selectedIdx;
-  SliderStack(this.size, this.numItems, this.selectedIdx){
-    sliderItems = List();
-    for(int i =0; i< numItems ; i++) sliderItems.add(SliderStackItem(selectedIdx == i));
+  IndicatorStack(this.size, this.numItems, this.selectedIdx){
+    indicatorItems = List();
+    for(int i =0; i< numItems ; i++) indicatorItems.add(IndicatorStackItem(selectedIdx == i));
   }
 
   @override
@@ -43,7 +43,7 @@ class SliderStack extends StatelessWidget {
       width: size.width,
       height: size.height,
       child: Row(        
-        children: sliderItems,
+        children: indicatorItems,
       ),
     );
     
