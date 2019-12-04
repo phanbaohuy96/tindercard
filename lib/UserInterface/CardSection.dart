@@ -33,7 +33,15 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
     //create card
     for (cardsCounter = 0; cardsCounter < 3; cardsCounter++)
     {
-      cards.add(new ProfileCardItem(cardsCounter + 1, 9, _onFontCardPanUpdate, changeCardOder, _onCardRollBack));
+      cards.add(new ProfileCardItem(
+        cardNum: cardsCounter + 1,
+        numImages: 9, 
+        onCardPanUpdateCallBack: _onFontCardPanUpdate, 
+        onReleaseCallback: changeCardOder, 
+        onCardRollBackCallBack: _onCardRollBack,
+        onComplete: _onCardReleaseCompleted,
+        )
+      );
     }
 
     _controller = new AnimationController(duration: new Duration(milliseconds: 500), vsync: this);
@@ -55,14 +63,18 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
   _onFontCardPanUpdate(double perbackCard)
   {
-    print("_onFontCardPanUpdate");
     setState(() {
       backCardSize = new Size(
         contextSize.width * (maxPerWidthBack + (1 - maxPerWidthBack) * perbackCard * 2), 
         contextSize.height * (maxPerHeightBack + (1 - maxPerHeightBack) * perbackCard / 2)
       );
     });
-    
+  }
+
+  _onCardReleaseCompleted() {
+    setState(() {
+      cards.removeAt(0);
+    });
   }
 
   _onCardRollBack()
@@ -93,8 +105,15 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
   } 
 
   void changeCardOder() {
-    cards.removeAt(0);
-    cards.add(new ProfileCardItem(cardsCounter + 1, 3, _onFontCardPanUpdate, changeCardOder, _onCardRollBack));
+    cards.add(new ProfileCardItem(
+      cardNum: cardsCounter + 1,
+      numImages: 3, 
+      onCardPanUpdateCallBack: _onFontCardPanUpdate, 
+      onReleaseCallback: changeCardOder, 
+      onCardRollBackCallBack: _onCardRollBack,
+      onComplete: _onCardReleaseCompleted,
+      )
+    );
     cardsCounter ++;      
     backCardSize = new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack);
   }

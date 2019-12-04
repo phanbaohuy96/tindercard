@@ -7,10 +7,18 @@ class ProfileCardItem extends StatefulWidget {
 
   final int cardNum, numImages;
   final List<String> imageList = new List();
-  final Function onCardPanUpdateCallBack, onReleaseCallback, onCardRollBackCallBack;
+  final Function onCardPanUpdateCallBack, onReleaseCallback, onCardRollBackCallBack, onComplete;
 
+  ProfileCardItem({ 
+    this.cardNum, 
+    this.numImages, 
+    this.onCardPanUpdateCallBack, 
+    this.onReleaseCallback, 
+    this.onCardRollBackCallBack,
+    this.onComplete
+  }) : super(key: UniqueKey());
+  
 
-  ProfileCardItem(this.cardNum, this.numImages, this.onCardPanUpdateCallBack, this.onReleaseCallback, this.onCardRollBackCallBack);
   @override
   _ProfileCardItemState createState() {
     print("createState" );
@@ -37,7 +45,7 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
 
     _controller = new AnimationController(duration: new Duration(milliseconds: 500), vsync: this);
     _controller.addListener(() => setState(() { }));
-    _controller.addStatusListener((status) => _onComplete(status));
+    _controller.addStatusListener(_onComplete);
 
     super.initState();    
     _selectedIdx = 0;
@@ -53,6 +61,8 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
       {
         _offset = new Offset(0.0, 0.0);
         _rotation = 0.0;
+      } else {
+        widget.onComplete();
       }
       _isRollback = true;
     }
@@ -80,6 +90,7 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
 
   _onCardPanEnd()
   {
+    print("_onCardPanEnd");
     _isRollback = !(_offset.dx >= 80.0 || _offset.dx <= -80.0);
     if(_isRollback) widget.onCardRollBackCallBack();
     else widget.onReleaseCallback();
@@ -105,12 +116,12 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
     });
   }
 
-  _cardAnimRollBackOrDisappear() => !_isRollback ? CardsAnimation.frontCardDisappearOffsetAnim(_controller, _offset).value : CardsAnimation.frontCardRollBackOffsetAnim(_controller, _offset).value;
+  _cardAnimRollBackOrDisappear() => !_isRollback ? 
+    CardsAnimation.frontCardDisappearOffsetAnim(_controller, _offset).value : 
+    CardsAnimation.frontCardRollBackOffsetAnim(_controller, _offset).value;
 
   @override
   Widget build(BuildContext context) {
-    print("build" );
-
     return new Align(
       child: new Transform.translate(
         offset: _controller.status == AnimationStatus.forward ? _cardAnimRollBackOrDisappear() : _offset,
