@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'SliderStack.dart';
 import 'package:tinder_card/Controller/AnimationUtils/CardsAnimation.dart';
 import 'dart:math';
+
+import 'package:tinder_card/UserInterface/IndicatorStack.dart';
 
 class ProfileCardItem extends StatefulWidget {
 
@@ -177,7 +178,7 @@ class _ProfileCardItemState extends State<ProfileCardItem> with SingleTickerProv
                   padding: const EdgeInsets.only(top: 5),
                   child: Align(
                     alignment: Alignment.topCenter,
-                    child: SliderStack(
+                    child: IndicatorStack(
                       Size(MediaQuery.of(context).size.width - 20, MediaQuery.of(context).size.height * 0.012), 
                       widget.numImages, 
                       _selectedIdx
