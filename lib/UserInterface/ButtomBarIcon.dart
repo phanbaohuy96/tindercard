@@ -31,20 +31,20 @@ class ButtomBarIcon extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.white,
         boxShadow:[
-          new BoxShadow(
+          BoxShadow(
             color: Colors.black26,
             blurRadius: 10.0
           )
         ]
       ),
-      child: new RawMaterialButton(
-        shape: new CircleBorder(),
+      child: RawMaterialButton(
+        shape: CircleBorder(),
         elevation: 0.0,
-        child: new Icon(
+        child: Icon(
           icon,
           color: iconColor,
         ),

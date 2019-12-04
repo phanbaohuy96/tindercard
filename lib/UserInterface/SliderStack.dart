@@ -6,14 +6,14 @@ class SliderStackItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Flexible(
+    return Flexible(
       child: Container(
-        child: new Container(
+        child: Container(
           margin: EdgeInsets.all(3),
-          child: new Container(
-            decoration: new BoxDecoration(
+          child: Container(
+            decoration: BoxDecoration(
               color: isSelected ? Colors.white : Colors.grey,
-              borderRadius: new BorderRadius.circular(3.0)
+              borderRadius: BorderRadius.circular(3.0)
             ),
           ),
         ),
@@ -33,13 +33,13 @@ class SliderStack extends StatelessWidget {
   
   final int selectedIdx;
   SliderStack(this.size, this.numItems, this.selectedIdx){
-    sliderItems = new List();
-    for(int i =0; i< numItems ; i++) sliderItems.add(new SliderStackItem(selectedIdx == i));
+    sliderItems = List();
+    for(int i =0; i< numItems ; i++) sliderItems.add(SliderStackItem(selectedIdx == i));
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
       width: size.width,
       height: size.height,
       child: Row(        

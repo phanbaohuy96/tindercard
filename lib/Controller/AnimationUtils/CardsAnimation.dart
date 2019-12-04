@@ -5,16 +5,16 @@ class CardsAnimation
   //Release card
   static Animation<Offset> frontCardDisappearOffsetAnim(AnimationController parent, Offset beginOffset)
   {
-    return new Tween<Offset>
+    return Tween<Offset>
     (
       begin: beginOffset,
-      end: new Offset(beginOffset.dx > 0 ? beginOffset.dx + 500.0 : beginOffset.dx - 500.0, 0.0) // Has swiped to the left or right?
+      end: Offset(beginOffset.dx > 0 ? beginOffset.dx + 500.0 : beginOffset.dx - 500.0, 0.0) // Has swiped to the left or right?
     ).animate
     (
-      new CurvedAnimation
+      CurvedAnimation
       (
         parent: parent,
-        curve: new Interval(0.0, 0.5, curve: Curves.easeIn)
+        curve: Interval(0.0, 0.5, curve: Curves.easeIn)
       )
     );
   }
@@ -22,16 +22,16 @@ class CardsAnimation
   //Rollback offset Card
   static Animation<Offset> frontCardRollBackOffsetAnim(AnimationController parent, Offset beginOffset)
   {
-    return new Tween<Offset>
+    return Tween<Offset>
     (
       begin: beginOffset,
-      end: new Offset(0.0, 0.0)
+      end: Offset(0.0, 0.0)
     ).animate
     (
-      new CurvedAnimation
+      CurvedAnimation
       (
         parent: parent,
-        curve: new Interval(0.0, 0.5, curve: Curves.easeIn)
+        curve: Interval(0.0, 0.5, curve: Curves.easeIn)
       )
     );
   }
@@ -39,32 +39,32 @@ class CardsAnimation
   //Rollback rotation Card
   static Animation<double> frontCardRollBackRotAnim(AnimationController parent, double beginRot)
   {
-    return new Tween<double>
+    return Tween<double>
     (
       begin: beginRot,
       end: 0 
     ).animate
     (
-      new CurvedAnimation
+      CurvedAnimation
       (
         parent: parent,
-        curve: new Interval(0.0, 0.5, curve: Curves.easeIn)
+        curve: Interval(0.0, 0.5, curve: Curves.easeIn)
       )
     );
   }
 
   static Animation<Size> backCardRollBackResizeAnim(AnimationController parent, Size beginSize, Size endSize)
   {
-    return new Tween<Size>
+    return Tween<Size>
     (
       begin: beginSize,
       end: endSize 
     ).animate
     (
-      new CurvedAnimation
+      CurvedAnimation
       (
         parent: parent,
-        curve: new Interval(0.0, 0.5, curve: Curves.easeIn)
+        curve: Interval(0.0, 0.5, curve: Curves.easeIn)
       )
     );
   }

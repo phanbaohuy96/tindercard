@@ -12,8 +12,8 @@ class CardSection extends StatefulWidget {
   
   CardSection (BuildContext context)
   {
-    contextSize = new Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
-    backCardSize = new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack);
+    contextSize = Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
+    backCardSize = Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack);
   }
 
   @override  
@@ -24,7 +24,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 {
   int cardsCounter = 0;
 
-  List<ProfileCardItem> cards = new List();
+  List<ProfileCardItem> cards = List();
   AnimationController _controller;
 
   @override
@@ -33,7 +33,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
     //create card
     for (cardsCounter = 0; cardsCounter < 3; cardsCounter++)
     {
-      cards.add(new ProfileCardItem(
+      cards.add(ProfileCardItem(
         cardNum: cardsCounter + 1,
         numImages: 9, 
         onCardPanUpdateCallBack: _onFontCardPanUpdate, 
@@ -44,7 +44,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
       );
     }
 
-    _controller = new AnimationController(duration: new Duration(milliseconds: 500), vsync: this);
+    _controller = AnimationController(duration: Duration(milliseconds: 500), vsync: this);
     _controller.addListener(() => setState( () {} ));
     super.initState();
   }
@@ -52,7 +52,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: new Stack(
+      child: Stack(
         children: <Widget>[ 
           backCard(),
           frontCard()
@@ -64,7 +64,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
   _onFontCardPanUpdate(double perbackCard)
   {
     setState(() {
-      backCardSize = new Size(
+      backCardSize = Size(
         contextSize.width * (maxPerWidthBack + (1 - maxPerWidthBack) * perbackCard * 2), 
         contextSize.height * (maxPerHeightBack + (1 - maxPerHeightBack) * perbackCard / 2)
       );
@@ -87,7 +87,7 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
   frontCard()
   {
-    return new Align(
+    return Align(
       child: SizedBox.fromSize(
         child: cards[0],
       )
@@ -96,16 +96,16 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
 
   backCard()
   {
-    return new Align(      
-      child: new SizedBox.fromSize(
-        size: _controller.status == AnimationStatus.forward ? CardsAnimation.backCardRollBackResizeAnim(_controller, backCardSize, new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack)).value : backCardSize,
+    return Align(      
+      child: SizedBox.fromSize(
+        size: _controller.status == AnimationStatus.forward ? CardsAnimation.backCardRollBackResizeAnim(_controller, backCardSize, Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack)).value : backCardSize,
         child: cards[1],
       )
     );
   } 
 
   void changeCardOder() {
-    cards.add(new ProfileCardItem(
+    cards.add(ProfileCardItem(
       cardNum: cardsCounter + 1,
       numImages: 3, 
       onCardPanUpdateCallBack: _onFontCardPanUpdate, 
@@ -115,6 +115,6 @@ class _CardSectionState extends State<CardSection>  with SingleTickerProviderSta
       )
     );
     cardsCounter ++;      
-    backCardSize = new Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack);
+    backCardSize = Size(contextSize.width * maxPerWidthBack, contextSize.height * maxPerHeightBack);
   }
 }
